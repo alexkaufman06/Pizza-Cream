@@ -5,48 +5,70 @@
   <title>Pizza Cream</title>
   <script src="lib/angular.js"></script>
   <script src="app.js"></script>
-  <script src="controllers/FoodController.js"></script>
+  <script src="services/PizzaCreamFactory.js"></script>
+  <script src="controllers/PizzaController.js"></script>
+  <script src="controllers/IceCreamController.js"></script>
   <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
-  <!-- <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'> -->
   <link href="css/styles.css" rel="stylesheet" type="text/css">
 </head>
 <body>
   <div class="container">
     <h1>Pizza Cream</h1>
-    <button class="btn btn-success" ng-click="tab = 'pizza'">Pizza?</button>
-    <button class="btn btn-success" ng-click="tab = 'ice'">Ice Cream?</button>
-    <!-- Below is for accessing root scope -->
-    <div ng-controller="FoodCtrl">
-
-
-        <div ng-controller="PizzaCtrl" ng-show="tab === 'pizza'">
-           <ul>
-            <li ng-repeat="pizza in pizzas">
-          <form class="form-inline" role="form" ng-submit="addPizza('{{pizza.name}}')">
-              <div class="form-group">
-                <div class="input-group">
-                  <button class='btn btn-danger' ng-click="pizza.show = !pizza.show"> {{ pizza.name }} </button>
-                  <div class='checkbox' ng-show="pizza.show">
-                    <input type='checkbox' ng-model='pizzaPrice' ng-true-value="'{{pizza.prices[0]}}'"> (S) {{ pizza.prices[0] | currency }}
-                    <input type='checkbox' ng-model='pizzaPrice' ng-true-value="'{{pizza.prices[1]}}'"> (M) {{ pizza.prices[1] | currency }}
-                    <input type='checkbox' ng-model='pizzaPrice' ng-true-value="'{{pizza.prices[2]}}'"> (L) {{ pizza.prices[2] | currency }}
-                  </div>
-                </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <button class="btn btn-success" ng-click="tab = 'pizza'">Pizza?</button>
+        <button class="btn btn-success" ng-click="tab = 'ice'">Ice Cream?</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-6" ng-controller="PizzaCtrl" ng-show="tab === 'pizza'">
+        <form ng-submit="PizzaCreamFactory.addFood()">
+          <div class='form-group'>
+            <ul>
+              <li ng-repeat="pizza in pizzas">
+                <input type='checkbox' ng-model='PizzaCreamFactory.foodInfo' ng-true-value="{{[pizza.name, pizza.price, 'Pizza']}}"> {{pizza.name }}: {{ pizza.price | currency }}
+              </li>
+            </ul>
+            <input type='number' ng-model='PizzaCreamFactory.quantity' placeholder="Enter Quantity" min="1" required>
+          </div>
+          <button class="btn btn-success" type='submit'>Order</button>
+        </form>
+        <div>
+          Pizza Order: {{PizzaCreamFactory.pizzaTotal | currency}}
+          <ul>
+            <li ng-repeat="item in order">
+              <div class="well col-xs-4">
+                {{item.quantity}} {{item.name}} {{item.price | currency}}
               </div>
             </li>
           </ul>
-        </form>
         </div>
-
-        <div ng-controller="IceCreamCtrl" ng-show="tab === 'ice'">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-6" ng-controller="IceCreamCtrl" ng-show="tab === 'ice'">
+        <form ng-submit="PizzaCreamFactory.addFood()">
+          <div class='form-group'>
+            <ul>
+              <li ng-repeat="flavor in flavors">
+                <input type='checkbox' ng-model='PizzaCreamFactory.foodInfo' ng-true-value="{{[flavor.name, flavor.price, 'Ice Cream']}}"> {{flavor.name }}: {{ flavor.price | currency }}
+              </li>
+            </ul>
+            <input type='number' ng-model='PizzaCreamFactory.quantity' placeholder="Enter Quantity" min="1" required>
+          </div>
+          <button class="btn btn-success" type='submit'>Order</button>
+        </form>
+        <div>
+          Ice Cream Order: {{PizzaCreamFactory.iceCreamTotal | currency}}
           <ul>
-            <li ng-repeat="flavor in flavors">
-              {{flavor.name}}
+            <li ng-repeat="item in order">
+              <div class="well col-xs-4">
+                {{item.quantity}} {{item.name}} {{item.price | currency}}
+              </div>
             </li>
           </ul>
         </div>
-
-        <button type='submit'>Order</button>
+      </div>
     </div>
   </div>
 </body>
